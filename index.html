@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<title>Home — ZgPHP Meetup</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="https://cdn.tailwindcss.com"></script>
+<body class="bg-gradient-to-r from-[#1A1A1E] via-[#282A40] to-[#2E314E] h-screen relative">
+
+<div class="mx-auto px-2 sm:px-1 lg:px-32">
+  <div class="flex py-4 flex-col md:flex-row items-center justify-center">
+    <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+      <div class="flex flex-shrink-0 items-center">
+        <a href="/" class="text-3xl italic font-semibold text-white">
+          <span class="text-[#6C7FB7]">zgphp</span>
+          ::meetup
+        </a>
+      </div>
+    </div>
+    <div
+      class="inset-y-0 right-0 flex items-center pr-2 sm:block sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+    <a
+      target="_blank"
+      href="https://www.linkedin.com/in/blazekmario/"
+      role="button"
+      class="px-4 py-2 mt-2 hover:bg-[#4E629D] font-semibold text-sm text-white rounded-md shadow-sm bg-[#6C7FB7 transition-colors duration-300 ease-in-out"
+    >
+      Become a speaker
+    </a>
+
+      <a
+      target="_blank"
+      href="https://codotto.com/groups/zgphp-meetup"
+      role="button"
+      class="px-4 py-2 mt-2 hover:bg-[#4E629D] font-semibold text-sm text-white rounded-md shadow-sm bg-[#6C7FB7 transition-colors duration-300 ease-in-out"
+    >
+      Join the community
+    </a>
+  </div>
+</div>
+
+<main class="h-full">
+  <img
+    class="absolute bottom-0 right-0 hidden lg:block w-3/4 max-w-[1200px]"
+    src="images/mascot.svg"
+    alt="zgphp mascot - elephant"
+    width="150"
+    height="150">
+
+  <div
+    class="[background:linear-gradient(254.94deg,#6C7FB7_34.27%,#1D3271_121.1%)]
+        animate__animated animate__fadeIn animate__slow
+        hover:scale-105
+        transition-transform duration-300 ease-in-out absolute bottom-[80px] left-[50%] translate-x-[-50%] w-[80%] rounded-md"
+  >
+    <div class="relative overflow-hidden">
+      <img
+        class="absolute bottom-0 right-0 w-full max-w-[340px] -z-10 lg:hidden opacity-30"
+        src="images/mascot.svg"
+        alt="zgphp mascot - elephant"
+        width="150"
+        height="150"/>
+
+      <div class="lg:w-2/3 p-8">
+        <a
+          data-meetup-link
+          href="https://codotto.com/groups/zgphp-meetup"
+          aria-label="Check out more about the latest meetup"
+          class="text-md mb-4 text-white block animate__animated animate__fadeIn"
+        >
+          <span id="meetupDateTime">Loading...</span> - <span id="meetupLocation">Loading...</span>
+        </a>
+
+        <a
+          data-meetup-link
+          id="meetupTitle"
+          href="https://codotto.com/groups/zgphp-meetup"
+          class="font-bold text-3xl text-white block animate__animated animate__fadeIn animate__slow animate__delay-1s"
+          aria-label="Check out more about the latest meetup"
+        >
+          Loading...
+        </a>
+
+        <div class="gap-5 mt-8 flex flex-wrap items-center">
+          <a
+            data-meetup-link
+            role="button"
+            href="https://codotto.com/groups/zgphp-meetup"
+            class="py-2 px-4 bg-white rounded-full text-[#495D98] font-semibold animate__animated animate__fadeIn animate__slow animate__delay-1s"
+            aria-label="Reserve your spot at the next meetup"
+          >
+            RSVP Here
+          </a>
+
+          <a
+            class="font-semibold text-white animate__animated animate__fadeIn animate__slow animate__delay-1s"
+            href="https://codotto.com/groups/zgphp-meetup"
+            aria-label="Learn more about the next meetup"
+          >
+            Learn more
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function readyBody(response) {
+    return response.json();
+  }
+
+  function fillInformation(_meetupResponse) {
+    const meetup = _meetupResponse.data[0];
+
+    document.querySelectorAll('[data-meetup-link]')
+      .forEach((element) => {
+        element.href = `https://codotto.com/meetups/${meetup.slug}`;
+      })
+
+    const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const meetupDate = new Date(meetup.date);
+
+    document.getElementById('meetupDateTime').innerText = meetupDate.toLocaleDateString('en-US', optionsDate);
+    document.getElementById('meetupLocation').innerText = meetup.locationName;
+    document.getElementById('meetupTitle').innerText = meetup.title;
+  }
+
+  function fetchData() {
+    const searchParams = new URLSearchParams({
+      'groups[]': '7624e022-8a48-4b8e-b366-338c4cfbeee4',
+      'states[]': 2,
+      dateOrder: 'asc',
+      from: (new Date()).toISOString(),
+    });
+
+    fetch('https://api.codotto.com/meetups?' + searchParams, {
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(readyBody)
+      .then(fillInformation);
+  }
+
+  window.onload = fetchData;
+</script>
+
+</body>
+</html>
